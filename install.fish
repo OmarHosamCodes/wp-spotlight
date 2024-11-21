@@ -54,6 +54,10 @@ function build_project
     echo "Project installed successfully!"
 end
 
+# Display help message
+echo "Usage: ./install.fish"
+wp-spotlight --help
+
 # Main script
 install_rust
 install_dependencies
