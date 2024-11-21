@@ -55,7 +55,7 @@ build_project() {
 }
 
 # Display help message
-echo "Usage: ./install.fish"
+echo "Usage: ./install.sh"
 wp-spotlight --help
 
 # Main script
