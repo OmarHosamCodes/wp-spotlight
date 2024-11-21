@@ -362,13 +362,15 @@ fn main() -> io::Result<()> {
         Path::new(&args.directory).canonicalize()?
     };
 
+    // Get directory name for both output file and project name
+    let dir_name = directory
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("wp-spotlight")
+        .to_string();
+
     // Generate default output filename based on directory name
     let output_file = args.output.unwrap_or_else(|| {
-        let dir_name = directory
-            .file_name()
-            .and_then(|name| name.to_str())
-            .unwrap_or("wp-spotlight");
-
         format!(
             "{}-analysis.{}",
             dir_name,
@@ -379,11 +381,7 @@ fn main() -> io::Result<()> {
         )
     });
 
-    let project_name = directory
-        .file_name()
-        .and_then(|name| name.to_str())
-        .unwrap_or("WordPress Project")
-        .to_string();
+    let project_name = dir_name;
 
     let analyzer = WPHooksAnalyzer::new();
     let mut results = analyzer.scan_directory(directory.to_str().unwrap_or("."))?;
