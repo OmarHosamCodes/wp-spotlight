@@ -14,7 +14,7 @@ install_rust() {
 # Function to clone the Git repository
 clone_repo() {
     echo "Cloning repository..."
-    git clone https://github.com/your_username/your_repo.git
+    git clone https://github.com/OmarHosamCodes/wp-spotlight.git
     cd your_repo || exit
 }
 
@@ -50,7 +50,7 @@ install_dependencies() {
 build_project() {
     echo "Building the project..."
     cargo build --release
-    sudo mv target/release/your_executable_name /usr/local/bin/
+    sudo mv target/release/wp-spotlight /usr/local/bin/
     echo "Project installed successfully!"
 }
 
