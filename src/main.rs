@@ -3,7 +3,7 @@ use csv::WriterBuilder;
 use regex::Regex;
 use serde::Serialize;
 use std::collections::HashMap;
-use std::env;
+// use std::env;
 use std::fmt;
 use std::fs::{self, File};
 use std::io::{self, Write};
@@ -355,12 +355,8 @@ impl WPHooksAnalyzer {
 fn main() -> io::Result<()> {
     let args = Args::parse();
 
-    // Get absolute path of the directory
-    let directory = if args.directory == "." {
-        env::current_dir()?
-    } else {
-        Path::new(&args.directory).canonicalize()?
-    };
+    // Use the directory as-is for relative paths
+    let directory = Path::new(&args.directory).to_path_buf();
 
     // Get directory name for both output file and project name
     let dir_name = directory
@@ -385,6 +381,13 @@ fn main() -> io::Result<()> {
 
     let analyzer = WPHooksAnalyzer::new();
     let mut results = analyzer.scan_directory(directory.to_str().unwrap_or("."))?;
+
+    // Convert all file paths in results to relative paths
+    for result in &mut results {
+        if let Ok(relative_path) = Path::new(&result.file_path).strip_prefix(&directory) {
+            result.file_path = relative_path.to_string_lossy().to_string();
+        }
+    }
 
     if let Some(category) = args.category {
         results.retain(|r| r.category == category.to_string());
