@@ -1,22 +1,61 @@
 #!/usr/bin/env fish
 
-# Build the release version
-cargo build --release
+# Detect Operating System
+set -l OS (uname -s)
+echo "Detected OS: $OS"
 
-# Create binary directory if it doesn't exist
-mkdir -p ~/.local/bin
-
-# Copy the binary
-cp target/release/wp-spotlight ~/.local/bin/
-
-# Make it executable
-chmod +x ~/.local/bin/wp-spotlight
-
-# Add to PATH if not already there
-if not contains "$HOME/.local/bin" $fish_user_paths
-    set -Ua fish_user_paths $HOME/.local/bin
-    echo "Added ~/.local/bin to PATH. Please restart your terminal or run:"
-    echo "exec fish"
+# Function to install Rust
+function install_rust
+    echo "Installing Rust..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    source $HOME/.cargo/env
 end
 
-echo "wp-spotlight has been installed successfully!"
+# Function to clone the Git repository
+function clone_repo
+    echo "Cloning repository..."
+    git clone https://github.com/your_username/your_repo.git
+    cd your_repo; or exit
+end
+
+# Function to install dependencies
+function install_dependencies
+    echo "Installing dependencies..."
+    if test "$OS" = "Linux"
+        if type -q pacman
+            echo "Arch Linux detected."
+            sudo pacman -Syu --noconfirm base-devel openssl pkg-config
+        else if type -q apt
+            echo "Debian-based system detected."
+            sudo apt update
+            sudo apt install -y build-essential pkg-config libssl-dev
+        else
+            echo "Unsupported Linux distribution. Install dependencies manually."
+            exit 1
+        end
+    else if test "$OS" = "Darwin"
+        echo "macOS detected."
+        brew update
+        brew install openssl pkg-config
+    else if string match -rq '^MINGW|^CYGWIN' -- "$OS"
+        echo "Windows detected. Ensure dependencies are installed manually if not present."
+        # Add Windows-specific dependency installation commands if required
+    else
+        echo "Unsupported OS."
+        exit 1
+    end
+end
+
+# Function to build the project
+function build_project
+    echo "Building the project..."
+    cargo build --release
+    sudo mv target/release/your_executable_name /usr/local/bin/
+    echo "Project installed successfully!"
+end
+
+# Main script
+install_rust
+install_dependencies
+clone_repo
+build_project
