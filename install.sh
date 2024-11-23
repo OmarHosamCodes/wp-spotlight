@@ -15,7 +15,7 @@ install_rust() {
 clone_repo() {
     echo "Cloning repository..."
     git clone https://github.com/OmarHosamCodes/wp-spotlight.git
-    cd your_repo || exit
+    cd wp-spotlight || exit
 }
 
 # Function to install dependencies

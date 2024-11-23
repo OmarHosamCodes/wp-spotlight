@@ -15,7 +15,7 @@ end
 function clone_repo
     echo "Cloning repository..."
     git clone https://github.com/OmarHosamCodes/wp-spotlight.git
-    cd your_repo; or exit
+    cd wp-spotlight; or exit
 end
 
 # Function to install dependencies
